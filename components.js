@@ -50,7 +50,7 @@ class StartComponent extends Rete.Component {
     }
 
     builder(node) {
-        var out = new Rete.Output('output', "Start", locationSocket);
+        var out = new Rete.Output('choices', "Start", choiceSocket);
 
         return node
             .addOutput(out);
