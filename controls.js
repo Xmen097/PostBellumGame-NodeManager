@@ -1,3 +1,4 @@
+
 var numSocket = new Rete.Socket('Number value');
 
 var VueNumControl = {
@@ -51,6 +52,7 @@ var VueTextControl = {
   },
   methods: {
     change(e){
+      this.value = e.target.value;
       this.update();
     },
     update() {
@@ -91,6 +93,7 @@ var VueLongTextControl = {
   },
   methods: {
     change(e){
+      this.value = e.target.value;
       this.update();
     },
     update() {
@@ -123,38 +126,38 @@ class LongTextControl extends Rete.Control {
 var imageSocket = new Rete.Socket('Text value');
 
 var VueImageControl = {
-  props: ['emitter', 'ikey', 'getData', 'putData', 'identifier'],
-  template: '<div class="imageViewer"><img class="imageViewer" alt="Background image" ><br><input class="imageViewer" type="file" :value="value" @input="change($event)" @dblclick.stop="" @pointerdown.stop="" @pointermove.stop=""/></div>',
-  data() { 
+  props: ['emitter', 'ikey', 'getData', 'putData', 'identifier', 'id'],
+  template: '<div class="imageViewer"><img class="imageViewer" alt="Background image" ><br><form action="/admin" method="POST" enctype=multipart/form-data><input type="text" name="id" style="visibility: hidden; height:0px" :value="id"><input class="imageViewer" name="file" type="file" :value="value" @input="change($event)" @dblclick.stop="" @pointerdown.stop="" @pointermove.stop=""/></form></div>',
+  data() {
     return {
       value: "",
+      id: -1
     }
   },
   methods: {
     change(e){
-      val = e.target.value.split("\\")
-      this.$el.firstChild.src = "img/"+val[val.length-1];
       this.update();
     },
     update() {
       if (this.ikey){
-        this.putData(this.ikey, this.value)
+        this.putData(this.ikey, "1")
       }
-
-      this.emitter.trigger('process');
+      blocking_save();
+      this.$el.children[2].submit();
     }
   },
   mounted() {
-    this.value = this.getData(this.ikey);
+    if(this.getData(this.ikey))
+      this.$el.firstChild.src = "/static/img/"+this.id+"?_=" + new Date().getTime();  // added to avoid image caching
   }
 }
 
 class ImageControl extends Rete.Control {
 
-  constructor(emitter, key) {
+  constructor(emitter, key, identifier) {
     super(key);
     this.component = VueImageControl;
-    this.props = { emitter, ikey: key};
+    this.props = { emitter, ikey: key, id: identifier};
   }
 
   setValue(val) {

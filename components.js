@@ -6,7 +6,7 @@ class LocationComponent extends Rete.Component {
     builder(node) {
         var name = new TextControl(this.editor, 'name', {placeholder: "name"});
         var text = new LongTextControl(this.editor, 'description', {placeholder: "description", id:"vertical"});
-        var bg = new ImageControl(this.editor, 'background');
+        var bg = new ImageControl(this.editor, 'background', node.id);
         var inp = new Rete.Input('locations', "Inputs", locationSocket, true);
         var out = new Rete.Output('choices', "Outputs", choiceSocket);
 
